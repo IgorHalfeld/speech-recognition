@@ -51,9 +51,10 @@
     var txt = evt.results[0][0].transcript
 
     if (cmd == 'apagar') {
+      text = ''
       board.value = ''
     }
-    text += txt
+    text += format(txt)
     board.value += format(txt)
   }
 
