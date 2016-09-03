@@ -3,10 +3,27 @@
 
   'use strict'
 
+  // APIs
+  // ===
   var r = new webkitSpeechRecognition()
+  var synth = window.speechSynthesis;
+
+  // Board
+  // ======
   var board = document.querySelector('.board')
-  var btn = document.querySelector('.btn-block')
+
+  // Buttons
+  // =======
+  var btnListen = document.querySelector('.btn-primary')
+  var btnSpeak = document.querySelector('.btn-default')
+
+  // Loading
+  // =======
   var loading = document.querySelector('.status')
+
+  // Will say
+  // =======
+  var text = ''
 
   r.lang = 'pt-BR'
 
@@ -17,23 +34,27 @@
 
   // Start recognition
   // ================
-  btn.addEventListener('click', () => {
+  btnListen.addEventListener('click', () => {
     r.start ? r.start() : r.onaudiostart()
     loading.innerHTML = 'Escutanto...'
   }, false)
+
+  btnSpeak.addEventListener('click', () => {
+    speak(text)
+  })
 
   // Get transcript
   // =============
   r.onresult = evt => {
     loading.innerHTML = ''
     var cmd = evt.results[0][0].transcript.split(' ')[0]
-    var text = evt.results[0][0].transcript
+    var txt = evt.results[0][0].transcript
 
     if (cmd == 'apagar') {
       board.value = ''
     }
-
-    board.value += format(text)
+    text += txt
+    board.value += format(txt)
   }
 
   // Stop the transcript if someone not say nothing
@@ -62,6 +83,12 @@
     v = v.replace(/(ponto)s?\s?\n?$/g, '. ')
     v = v.replace(/(nova linha)\s?\n?$/g, '\n')
     return v
+  }
+
+  function speak (t) {
+    var read = new SpeechSynthesisUtterance(t)
+    read.lang = 'pt-BR'
+    synth.speak(read)
   }
 
 })(window)
